@@ -28,10 +28,10 @@ export class DatabaseModule {
     return {
       connection: this.configService.get<string>('DB_CONNECTION') || 'pg',
       host: this.configService.get<string>('DB_HOST') || 'localhost',
-      port: this.configService.get<number>('DB_PORT') || 3306,
+      port: this.configService.get<number>('DB_PORT') || 5432,
       name: this.configService.get<string>('DB_NAME') || 'demal',
-      username: this.configService.get<string>('DB_USERNAME') || 'root',
-      password: this.configService.get<string>('DB_PASSWORD') || 'root',
+      username: this.configService.get<string>('DB_USERNAME') || 'postgres',
+      password: this.configService.get<string>('DB_PASSWORD') || '',
       ssl: { rejectUnauthorized: false },
     };
   }
@@ -45,7 +45,9 @@ export class DatabaseModule {
         port: configuration.port,
         password: configuration.password,
         database: configuration.name,
-        ssl: configuration.ssl,
+        ssl: {
+          rejectUnauthorized: configuration.ssl.rejectUnauthorized,
+        },
       },
     });
 
