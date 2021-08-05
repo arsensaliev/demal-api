@@ -9,5 +9,6 @@ module.exports = {
     port: parseInt(process.env.DB_PORT) || 5432,
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'demal',
+    ssl: { rejectUnauthorized: false },
   },
 };
