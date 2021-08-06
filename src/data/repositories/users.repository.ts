@@ -18,6 +18,10 @@ export class UsersRepository {
     return UserModel.query().findById(id);
   }
 
+  findByEmail(email: string): Promise<User> {
+    return UserModel.query().findOne({ email });
+  }
+
   updateAndFetchById(id: number, payload: UpdateUserDto): Promise<User> {
     return UserModel.query().patchAndFetchById(id, payload);
   }
