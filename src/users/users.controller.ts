@@ -15,6 +15,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -47,6 +48,7 @@ export class UsersController {
   }
 
   @ApiOkResponse({ description: 'User has been retrieved.' })
+  @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard, UserGuard)
   @Get('me')
   me(@Request() request) {
@@ -76,6 +78,7 @@ export class UsersController {
   @ApiOkResponse({ description: 'User has been updated.' })
   @ApiNotFoundResponse({ description: 'User not found.' })
   @ApiParam({ name: 'userId', description: 'User identifier', type: Number })
+  @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard)
   @Patch(':userId')
   async update(
@@ -90,6 +93,7 @@ export class UsersController {
   @ApiOkResponse({ description: 'User has been deleted.' })
   @ApiNotFoundResponse({ description: 'User not found.' })
   @ApiParam({ name: 'userId', description: 'User identifier', type: Number })
+  @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard)
   @Delete(':userId')
   remove(@Param('userId') userId: string) {
