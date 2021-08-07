@@ -9,8 +9,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
-    .setTitle('Sali Store API')
-    .setDescription('The Sali Store RESTful API documentation')
+    .setTitle('Demal API')
+    .setDescription('The Demal RESTful API documentation')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
