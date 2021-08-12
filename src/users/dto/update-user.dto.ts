@@ -15,4 +15,11 @@ export class UpdateUserDto {
   @MaxLength(255)
   @IsOptional()
   lastName: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(255)
+  @IsOptional()
+  imagePath: string;
 }
