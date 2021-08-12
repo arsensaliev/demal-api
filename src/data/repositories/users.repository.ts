@@ -26,6 +26,10 @@ export class UsersRepository {
     return UserModel.query().patchAndFetchById(id, payload);
   }
 
+  setUserImage(id: number, imagePath: string): Promise<User> {
+    return UserModel.query().patchAndFetchById(id, { imagePath });
+  }
+
   deleteById(id: number): Promise<number> {
     return UserModel.query().deleteById(id);
   }

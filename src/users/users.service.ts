@@ -72,7 +72,7 @@ export class UsersService {
     return this.usersRepository.findAll();
   }
 
-  async findOne(id: number): Promise<User> {
+  async findById(id: number): Promise<User> {
     const user = await this.usersRepository.findById(id);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -102,5 +102,14 @@ export class UsersService {
       id: user.id,
       isAdmin: false,
     };
+  }
+
+  async uploadImage(userId: number, imagePath: string): Promise<User> {
+    const user = await this.usersRepository.findById(userId);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return this.usersRepository.setUserImage(userId, imagePath);
   }
 }

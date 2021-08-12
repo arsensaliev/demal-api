@@ -10,6 +10,8 @@ import {
   HttpCode,
   UseGuards,
   Request,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -27,6 +29,8 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserGuard } from 'src/auth/user.guard';
 import { AdminGuard } from 'src/auth/admin.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import diskStorage from 'src/utils/disk-storage.util';
 
 @ApiTags('users')
 @Controller('api/v1/users')
@@ -48,6 +52,7 @@ export class UsersController {
   }
 
   @ApiOkResponse({ description: 'User has been retrieved.' })
+  @ApiUnauthorizedResponse({ description: 'Credentials are invalid.' })
   @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard, UserGuard)
   @Get('me')
@@ -71,7 +76,7 @@ export class UsersController {
   @Get(':userId')
   async findOne(@Param('userId') userId: string) {
     return {
-      user: await this.usersService.findOne(+userId),
+      user: await this.usersService.findById(+userId),
     };
   }
 
@@ -94,9 +99,29 @@ export class UsersController {
   @ApiNotFoundResponse({ description: 'User not found.' })
   @ApiParam({ name: 'userId', description: 'User identifier', type: Number })
   @ApiBearerAuth('JWT-auth')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard)
   @Delete(':userId')
   remove(@Param('userId') userId: string) {
     return this.usersService.remove(+userId);
+  }
+
+  @ApiOkResponse({ description: 'User image has been uploaded.' })
+  @ApiNotFoundResponse({ description: 'User not found.' })
+  @UseGuards(JwtAuthGuard, UserGuard)
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage,
+    }),
+  )
+  @Post('me/avatar')
+  async uploadImage(
+    @UploadedFile() image: Express.Multer.File,
+    @Request() request,
+  ) {
+    const user = request.user;
+    const imagePath = image.path.replace(/\\/g, '/');
+    return {
+      user: await this.usersService.uploadImage(+user.id, imagePath),
+    };
   }
 }
