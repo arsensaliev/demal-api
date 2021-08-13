@@ -121,7 +121,7 @@ export class UsersController {
     const user = request.user;
     const imagePath = image.path.replace(/\\/g, '/');
     return {
-      user: await this.usersService.uploadImage(+user.id, imagePath),
+      user: await this.usersService.uploadImage(+user.id, { imagePath }),
     };
   }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { InsertUserImageDto } from 'src/users/dto/insert-user-image.dto';
 import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 import { User } from 'src/users/entities/user.entity';
 import UserModel from '../models/user.model';
@@ -26,8 +27,10 @@ export class UsersRepository {
     return UserModel.query().patchAndFetchById(id, payload);
   }
 
-  setUserImage(id: number, imagePath: string): Promise<User> {
-    return UserModel.query().patchAndFetchById(id, { imagePath });
+  setUserImage(id: number, payload: InsertUserImageDto): Promise<User> {
+    return UserModel.query().patchAndFetchById(id, {
+      imagePath: payload.imagePath,
+    });
   }
 
   deleteById(id: number): Promise<number> {

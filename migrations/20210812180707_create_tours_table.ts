@@ -11,7 +11,7 @@ export async function up(knex: Knex): Promise<void> {
     table.integer('duration').notNullable();
     table.text('description').nullable();
     table.integer('travelersCount').notNullable();
-    table.date('startDate').notNullable();
+    table.timestamp('startDate').notNullable();
     table.integer('categoryId').unsigned().nullable();
     table
       .foreign('categoryId')

@@ -18,7 +18,7 @@ export async function seed(knex: Knex): Promise<void> {
       duration: 4,
       country: `Россия`,
       travelersCount: 10,
-      startDate: '2022-06-01T00:00:00.000Z',
+      startDate: '2022-06-01',
     },
     {
       id: 1,
@@ -31,7 +31,7 @@ export async function seed(knex: Knex): Promise<void> {
       duration: 2,
       country: `Италия`,
       travelersCount: 20,
-      startDate: '2022-06-01T00:00:00.000Z',
+      startDate: '2022-06-01',
     },
     {
       id: 2,
@@ -44,7 +44,7 @@ export async function seed(knex: Knex): Promise<void> {
       duration: 2,
       country: `Грузия`,
       travelersCount: 24,
-      startDate: '2022-06-01T00:00:00.000Z',
+      startDate: '2022-06-01',
     },
     {
       id: 3,
@@ -57,7 +57,7 @@ export async function seed(knex: Knex): Promise<void> {
       duration: 7,
       country: `Россия`,
       travelersCount: 12,
-      startDate: '2022-06-01T00:00:00.000Z',
+      startDate: '2022-06-01',
     },
     {
       id: 4,
@@ -70,7 +70,7 @@ export async function seed(knex: Knex): Promise<void> {
       duration: 2,
       country: `Узбекистан`,
       travelersCount: 18,
-      startDate: '2022-07-12T00:00:00.000Z',
+      startDate: '2022-06-01',
     },
 
     // Йога-Туры
@@ -85,7 +85,7 @@ export async function seed(knex: Knex): Promise<void> {
       duration: 20,
       country: `Россия`,
       travelersCount: 30,
-      startDate: '2022-07-12T00:00:00.000Z',
+      startDate: '2022-06-01',
     },
     {
       id: 6,
@@ -98,7 +98,7 @@ export async function seed(knex: Knex): Promise<void> {
       duration: 14,
       country: `Россия`,
       travelersCount: 37,
-      startDate: '2022-07-12T00:00:00.000Z',
+      startDate: '2022-06-01',
     },
   ]);
 }
