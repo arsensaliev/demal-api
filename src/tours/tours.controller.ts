@@ -14,18 +14,28 @@ import {
 import { ToursService } from './tours.service';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { UpdateTourDto } from './dto/update-tour.dto';
-import { ApiNotFoundResponse, ApiOkResponse, ApiParam } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiParam,
+} from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import diskStorage from 'src/utils/disk-storage.util';
+import { AdminGuard } from 'src/auth/admin.guard';
 
 @Controller('api/v1/tours')
 export class ToursController {
   constructor(private readonly toursService: ToursService) {}
 
+  @ApiCreatedResponse({ description: 'Tour has been created.' })
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createTourDto: CreateTourDto) {
-    return this.toursService.create(createTourDto);
+  async create(@Body() payload: CreateTourDto) {
+    return {
+      tour: await this.toursService.create(payload),
+    };
   }
 
   @ApiOkResponse({ description: 'Tours has been retrieved.' })
@@ -65,9 +75,17 @@ export class ToursController {
     };
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.toursService.remove(+id);
+  @ApiOkResponse({ description: 'Tour has been deleted.' })
+  @ApiNotFoundResponse({ description: 'Tour not found.' })
+  @ApiParam({
+    name: 'tourId',
+    description: 'Tour identifier',
+    type: Number,
+  })
+  @UseGuards(JwtAuthGuard)
+  @Delete(':tourId')
+  remove(@Param('tourId') tourId: string) {
+    return this.toursService.remove(+tourId);
   }
 
   @ApiOkResponse({ description: 'Tour image has been uploaded.' })

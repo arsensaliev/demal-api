@@ -10,10 +10,21 @@ import path from 'path';
 
 @Injectable()
 export class ToursService {
-  constructor(private readonly toursRepository: ToursRepository) {}
+  constructor(
+    private readonly toursRepository: ToursRepository,
+    private readonly categoriesRepotsitory: ToursRepository,
+  ) {}
 
-  create(createTourDto: CreateTourDto) {
-    return 'This action adds a new tour';
+  async create(payload: CreateTourDto): Promise<Tour> {
+    const category = await this.categoriesRepotsitory.findById(
+      payload.categoryId,
+    );
+    if (!category) {
+      throw new NotFoundException('Category not found');
+    }
+    const tour = await this.toursRepository.insertAndFetch(payload);
+
+    return tour;
   }
 
   async findAll(payload: FindToursDto): Promise<Tour[]> {
@@ -39,15 +50,18 @@ export class ToursService {
     return this.toursRepository.updateAndFetchById(id, updateTourDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} tour`;
+  async remove(id: number): Promise<void> {
+    const rowsDeleted = await this.toursRepository.deleteById(id);
+    if (!rowsDeleted) {
+      throw new NotFoundException('Tour not found');
+    }
   }
 
   async uploadImage(id: number, payload: InsertTourImageDto): Promise<Tour> {
     let tour = await this.toursRepository.findById(id);
 
     if (!tour) {
-      throw new NotFoundException('Product not found');
+      throw new NotFoundException('Tour not found');
     }
 
     await this.toursRepository.insertImage(tour.id, {
