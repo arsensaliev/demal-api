@@ -26,7 +26,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import diskStorage from 'src/utils/disk-storage.util';
 
-@ApiTags('users')
+@ApiTags('tours')
 @Controller('api/v1/tours')
 export class ToursController {
   constructor(private readonly toursService: ToursService) {}
