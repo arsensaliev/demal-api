@@ -9,6 +9,8 @@ export async function seed(knex: Knex): Promise<void> {
       firstName: 'Arsen',
       lastName: 'Saliev',
       email: 'arsen@mail.ru',
+      country: 'Казахстан',
+      city: 'Алматы',
       password: '$2a$10$uvngDEcA/Q2b7LA04FtdZeUZxAB/ozJV6dHMlrRWwNmjmHyUlEGwu',
       imagePath: null,
     },

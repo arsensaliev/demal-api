@@ -7,6 +7,7 @@ import { Injectable } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { UsersRepository } from 'src/data/repositories/users.repository';
 import { CreateUserDto } from './dto/create-user.dto';
+import { InsertUserImageDto } from './dto/insert-user-image.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -104,12 +105,17 @@ export class UsersService {
     };
   }
 
-  async uploadImage(userId: number, imagePath: string): Promise<User> {
+  async uploadImage(
+    userId: number,
+    payload: InsertUserImageDto,
+  ): Promise<User> {
     const user = await this.usersRepository.findById(userId);
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    return this.usersRepository.setUserImage(userId, imagePath);
+    return this.usersRepository.setUserImage(userId, {
+      imagePath: payload.imagePath,
+    });
   }
 }
