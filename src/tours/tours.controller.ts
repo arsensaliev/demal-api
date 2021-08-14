@@ -15,21 +15,24 @@ import { ToursService } from './tours.service';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { UpdateTourDto } from './dto/update-tour.dto';
 import {
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiParam,
+  ApiTags,
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import diskStorage from 'src/utils/disk-storage.util';
-import { AdminGuard } from 'src/auth/admin.guard';
 
+@ApiTags('users')
 @Controller('api/v1/tours')
 export class ToursController {
   constructor(private readonly toursService: ToursService) {}
 
   @ApiCreatedResponse({ description: 'Tour has been created.' })
+  @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() payload: CreateTourDto) {
@@ -40,7 +43,7 @@ export class ToursController {
 
   @ApiOkResponse({ description: 'Tours has been retrieved.' })
   @Get()
-  findAll(@Query('sortBy') sortBy: string, @Query('order') order: string) {
+  findAll(@Query('sortBy') sortBy?: string, @Query('order') order?: string) {
     return this.toursService.findAll({ sortBy, order });
   }
 
@@ -60,11 +63,13 @@ export class ToursController {
 
   @ApiOkResponse({ description: 'Tour has been updated.' })
   @ApiNotFoundResponse({ description: 'Tour not found.' })
+  @ApiBearerAuth('JWT-auth')
   @ApiParam({
     name: 'tourId',
     description: 'Tour identifier',
     type: Number,
   })
+  @UseGuards(JwtAuthGuard)
   @Patch(':tourId')
   async update(
     @Param('tourId') tourId: string,
@@ -77,6 +82,7 @@ export class ToursController {
 
   @ApiOkResponse({ description: 'Tour has been deleted.' })
   @ApiNotFoundResponse({ description: 'Tour not found.' })
+  @ApiBearerAuth('JWT-auth')
   @ApiParam({
     name: 'tourId',
     description: 'Tour identifier',
@@ -90,6 +96,7 @@ export class ToursController {
 
   @ApiOkResponse({ description: 'Tour image has been uploaded.' })
   @ApiNotFoundResponse({ description: 'Tour not found.' })
+  @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('image', {
@@ -109,6 +116,7 @@ export class ToursController {
 
   @ApiOkResponse({ description: 'Tour image has been deleted.' })
   @ApiNotFoundResponse({ description: 'Tour not found.' })
+  @ApiBearerAuth('JWT-auth')
   @ApiParam({
     name: 'imageId',
     description: 'Tour identifier',
