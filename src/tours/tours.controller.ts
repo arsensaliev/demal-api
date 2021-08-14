@@ -20,6 +20,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -42,8 +43,18 @@ export class ToursController {
   }
 
   @ApiOkResponse({ description: 'Tours has been retrieved.' })
+  @ApiQuery({
+    name: 'sortBy',
+    required: false,
+    schema: { default: 'createdAt' },
+  })
+  @ApiQuery({
+    name: 'order',
+    required: false,
+    schema: { default: 'desc' },
+  })
   @Get()
-  findAll(@Query('sortBy') sortBy?: string, @Query('order') order?: string) {
+  findAll(@Query('sortBy') sortBy: string, @Query('order') order: string) {
     return this.toursService.findAll({ sortBy, order });
   }
 
