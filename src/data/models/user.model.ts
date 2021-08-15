@@ -7,6 +7,8 @@ class UserModel extends Model {
   firstName: string;
   lastName: string;
   password: string;
+  country: string;
+  city: string;
   email: string;
   imagePath: string;
   createdAt: string;

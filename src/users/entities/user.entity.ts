@@ -3,6 +3,8 @@ export class User {
   firstName: string;
   lastName: string;
   password: string;
+  country: string;
+  city: string;
   email: string;
   imagePath: string;
   createdAt: string;
