@@ -10,6 +10,12 @@ class UserModel extends Model {
   email: string;
   imagePath: string;
   createdAt: string;
+
+  $formatJson(json) {
+    json = super.$formatJson(json);
+    delete json.password;
+    return json;
+  }
 }
 
 module.exports = UserModel;

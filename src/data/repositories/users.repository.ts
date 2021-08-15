@@ -8,7 +8,7 @@ import UserModel from '../models/user.model';
 @Injectable()
 export class UsersRepository {
   findAll(): Promise<User[]> {
-    return UserModel.query().select('id', 'firstName', 'lastName', 'email');
+    return UserModel.query();
   }
 
   insertAndFetch(payload: CreateUserDto): Promise<User> {
