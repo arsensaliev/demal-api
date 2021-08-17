@@ -12,6 +12,8 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { TokenPayload } from './interfaces/token-payload.interface';
+import fs from 'fs/promises';
+import path from 'path';
 
 @Injectable()
 export class UsersService {
@@ -114,8 +116,18 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
+
+    if (user.imagePath) {
+      await this.deleteFile(user.imagePath);
+    }
+
     return this.usersRepository.setUserImage(userId, {
       imagePath: payload.imagePath,
     });
+  }
+
+  async deleteFile(filePath: string) {
+    const dirnameToRoot = process.cwd();
+    return await fs.unlink(path.join(dirnameToRoot, filePath));
   }
 }
