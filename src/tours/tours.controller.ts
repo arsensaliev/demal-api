@@ -7,9 +7,9 @@ import {
   Param,
   Delete,
   Query,
-  UploadedFile,
   UseGuards,
   UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
 import { ToursService } from './tours.service';
 import { CreateTourDto } from './dto/create-tour.dto';
@@ -23,9 +23,10 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import diskStorage from 'src/utils/disk-storage.util';
+import { InsertTourImageDto } from 'src/data/dto/insert-tour-image.dto';
 
 @ApiTags('tours')
 @Controller('api/v1/tours')
@@ -109,19 +110,20 @@ export class ToursController {
   @ApiNotFoundResponse({ description: 'Tour not found.' })
   @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(
-    FileInterceptor('image', {
-      storage: diskStorage,
-    }),
-  )
+  @UseInterceptors(FilesInterceptor('images', 10, { storage: diskStorage }))
   @Post(':tourId/images')
   async uploadImage(
-    @UploadedFile() image: Express.Multer.File,
+    @UploadedFiles() files: Array<Express.Multer.File>,
     @Param('tourId') tourId: string,
   ) {
-    const imagePath = image.path.replace(/\\/g, '/');
+    const images: Array<InsertTourImageDto> = files.map((file) => ({
+      imagePath: file.path.replace(/\\/g, '/'),
+    }));
+
+    const tour = await this.toursService.uploadImage(+tourId, images);
+
     return {
-      tour: await this.toursService.uploadImage(+tourId, { imagePath }),
+      tour: tour,
     };
   }
 

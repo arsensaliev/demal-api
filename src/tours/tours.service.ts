@@ -57,16 +57,21 @@ export class ToursService {
     }
   }
 
-  async uploadImage(id: number, payload: InsertTourImageDto): Promise<Tour> {
+  async uploadImage(
+    id: number,
+    payload: Array<InsertTourImageDto>,
+  ): Promise<Tour> {
     let tour = await this.toursRepository.findById(id);
 
     if (!tour) {
       throw new NotFoundException('Tour not found');
     }
 
-    await this.toursRepository.insertImage(tour.id, {
-      imagePath: payload.imagePath,
-    });
+    for (const image of payload) {
+      await this.toursRepository.insertImage(tour.id, {
+        imagePath: image.imagePath,
+      });
+    }
 
     tour = await this.toursRepository.detailById(tour.id);
 
