@@ -57,9 +57,9 @@ export class UsersController {
   @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard, UserGuard)
   @Get('me')
-  me(@Req() request) {
+  async me(@Req() request) {
     return {
-      user: request.user,
+      user: await this.usersService.findById(request.user.id),
     };
   }
 

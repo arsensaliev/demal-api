@@ -15,7 +15,7 @@ class TourModel extends Model {
   country: string;
   travelersCount: number;
   startDate: Date;
-  category: CategoryModel;
+  category?: CategoryModel;
   images?: TourImageModel[];
   createdAt: string;
 
