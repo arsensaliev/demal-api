@@ -20,6 +20,12 @@ export class UsersRepository {
     return UserModel.query().findById(id);
   }
 
+  detailById(id: number): Promise<User> {
+    return UserModel.query().findById(id).withGraphFetched({
+      wishlist: true,
+    });
+  }
+
   findByEmail(email: string): Promise<User> {
     return UserModel.query().findOne({ email });
   }

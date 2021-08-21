@@ -1,3 +1,5 @@
+import { Tour } from 'src/tours/entities/tour.entity';
+
 export class User {
   id: number;
   firstName: string;
@@ -8,4 +10,5 @@ export class User {
   email: string;
   imagePath: string;
   createdAt: string;
+  wishlist?: Tour[];
 }

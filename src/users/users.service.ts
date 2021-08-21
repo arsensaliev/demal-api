@@ -80,7 +80,7 @@ export class UsersService {
   }
 
   async findById(id: number): Promise<User> {
-    const user = await this.usersRepository.findById(id);
+    const user = await this.usersRepository.detailById(id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
