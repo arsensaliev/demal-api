@@ -53,7 +53,10 @@ export class UsersRepository {
     const user = await UserModel.query().findById(userId);
     if (!user) return;
 
-    return user.$relatedQuery('wishlist').findById(tourId);
+    return user
+      .$relatedQuery('wishlist')
+      .findById(tourId)
+      .withGraphFetched({ images: true, category: true });
   }
 
   async findWishlistToursByUserId(id: number): Promise<Tour[]> {
