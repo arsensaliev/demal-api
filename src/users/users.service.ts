@@ -14,11 +14,15 @@ import { User } from './entities/user.entity';
 import { TokenPayload } from './interfaces/token-payload.interface';
 import fs from 'fs/promises';
 import path from 'path';
+import { AddWishlistTourDto } from './dto/add-wishlist-tour.dto';
+import { Tour } from 'src/tours/entities/tour.entity';
+import { ToursRepository } from 'src/data/repositories/tours.repository';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly usersRepository: UsersRepository,
+    private readonly toursRepository: ToursRepository,
     private readonly authService: AuthService,
   ) {}
 
@@ -129,5 +133,48 @@ export class UsersService {
   async deleteFile(filePath: string) {
     const dirnameToRoot = process.cwd();
     return await fs.unlink(path.join(dirnameToRoot, filePath));
+  }
+
+  async findWishlistTours(id: number): Promise<Tour[]> {
+    const user = await this.usersRepository.findById(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const tours = await this.usersRepository.findWishlistToursByUserId(user.id);
+    return tours;
+  }
+
+  async addWishlistTour(
+    userId: number,
+    payload: AddWishlistTourDto,
+  ): Promise<Tour> {
+    const user = await this.usersRepository.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const tour = await this.toursRepository.findById(payload.tourId);
+    if (!tour) {
+      throw new NotFoundException('Tour not found');
+    }
+
+    await this.usersRepository.relateTourToWishlist(user.id, tour.id);
+
+    return tour;
+  }
+
+  async removeWishlistTour(userId: number, tourId: number): Promise<void> {
+    const user = await this.usersRepository.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const tour = await this.usersRepository.findTourInWishlist(user.id, tourId);
+    if (!tour) {
+      throw new NotFoundException('Tour not found in wishlist');
+    }
+
+    await this.usersRepository.unrelateTourFromWishlist(userId, tourId);
   }
 }
