@@ -159,6 +159,15 @@ export class UsersService {
       throw new NotFoundException('Tour not found');
     }
 
+    const isExist = await this.usersRepository.findTourInWishlist(
+      user.id,
+      payload.tourId,
+    );
+
+    if (isExist) {
+      throw new ConflictException('Tour is exist in wishlist');
+    }
+
     await this.usersRepository.relateTourToWishlist(user.id, tour.id);
 
     return tour;
