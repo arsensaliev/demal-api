@@ -9,9 +9,9 @@ import {
   HttpStatus,
   HttpCode,
   UseGuards,
-  Request,
   UseInterceptors,
   UploadedFile,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -31,6 +31,7 @@ import { UserGuard } from 'src/auth/user.guard';
 import { AdminGuard } from 'src/auth/admin.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import diskStorage from 'src/utils/disk-storage.util';
+import { AddWishlistTourDto } from './dto/add-wishlist-tour.dto';
 
 @ApiTags('users')
 @Controller('api/v1/users')
@@ -56,7 +57,7 @@ export class UsersController {
   @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard, UserGuard)
   @Get('me')
-  me(@Request() request) {
+  me(@Req() request) {
     return {
       user: request.user,
     };
@@ -116,12 +117,59 @@ export class UsersController {
   @Post('me/avatar')
   async uploadImage(
     @UploadedFile() image: Express.Multer.File,
-    @Request() request,
+    @Req() request,
   ) {
     const user = request.user;
     const imagePath = image.path.replace(/\\/g, '/');
     return {
       user: await this.usersService.uploadImage(+user.id, { imagePath }),
     };
+  }
+
+  @ApiOkResponse({
+    description: 'Wishlist tours of the user has been retrieved.',
+  })
+  @ApiNotFoundResponse({ description: 'User not found.' })
+  @ApiParam({ name: 'userId', description: 'User identifier', type: Number })
+  @UseGuards(JwtAuthGuard)
+  @Get(':userId/wishlist')
+  async findWishlistTours(@Param('userId') userId: string) {
+    return {
+      tours: await this.usersService.findWishlistTours(+userId),
+    };
+  }
+
+  @ApiCreatedResponse({ description: 'Tour has been added into wishlist.' })
+  @ApiNotFoundResponse({ description: 'User not found.' })
+  @ApiParam({ name: 'userId', description: 'User identifier', type: Number })
+  @UseGuards(JwtAuthGuard)
+  @Post(':userId/wishlist')
+  async addWishlistTour(
+    @Param('userId') userId: string,
+    @Body() addWishlistTourDto: AddWishlistTourDto,
+  ) {
+    return {
+      tour: await this.usersService.addWishlistTour(
+        +userId,
+        addWishlistTourDto,
+      ),
+    };
+  }
+
+  @ApiOkResponse({ description: 'Tour has been deleted from wishlist.' })
+  @ApiNotFoundResponse({ description: 'User not found.' })
+  @ApiParam({ name: 'userId', description: 'User identifier', type: Number })
+  @ApiParam({
+    name: 'tourId',
+    description: 'Tour identifier',
+    type: Number,
+  })
+  @UseGuards(JwtAuthGuard)
+  @Delete(':userId/wishlist/:tourId')
+  removeWishlistTour(
+    @Param('userId') userId: string,
+    @Param('tourId') tourId: string,
+  ) {
+    return this.usersService.removeWishlistTour(+userId, +tourId);
   }
 }
