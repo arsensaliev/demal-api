@@ -18,6 +18,6 @@ export class UploadsController {
   })
   @Get(':imagePath')
   async findOne(@Param('imagePath') imagePath, @Res() res) {
-    return res.sendFile(imagePath, { root: './uploads' });
+    return res.sendFile(imagePath, { root: '../uploads' });
   }
 }
