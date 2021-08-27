@@ -11,7 +11,6 @@ export default () => {
       port: config.db.port as number,
       password: config.db.password,
       database: config.db.name,
-      ssl: { rejectUnauthorized: false },
     },
   });
 

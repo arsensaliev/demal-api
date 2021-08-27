@@ -121,9 +121,10 @@ export class UsersController {
   ) {
     const user = request.user;
     const imagePath = image.path.replace(/\\/g, '/');
-    return {
-      user: await this.usersService.uploadImage(+user.id, { imagePath }),
-    };
+    console.log(imagePath);
+    // return {
+    //   user: await this.usersService.uploadImage(+user.id, { imagePath }),
+    // };
   }
 
   @ApiOkResponse({

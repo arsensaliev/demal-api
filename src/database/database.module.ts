@@ -41,7 +41,6 @@ export class DatabaseModule {
         port: configuration.port,
         password: configuration.password,
         database: configuration.name,
-        ssl: { rejectUnauthorized: false },
       },
     });
 

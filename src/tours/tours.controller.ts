@@ -116,9 +116,15 @@ export class ToursController {
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Param('tourId') tourId: string,
   ) {
-    const images: Array<InsertTourImageDto> = files.map((file) => ({
-      imagePath: file.path.replace(/\\/g, '/'),
-    }));
+    const images: Array<InsertTourImageDto> = files
+      .map((file) => ({
+        imagePath: file.path.replace(/\\/g, '/'),
+      }))
+      .map((file) => ({
+        imagePath: file.imagePath.replace('/tmp/', ''),
+      }));
+
+    console.log(images);
 
     const tour = await this.toursService.uploadImage(+tourId, images);
 
