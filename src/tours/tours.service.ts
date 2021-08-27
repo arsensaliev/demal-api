@@ -7,6 +7,7 @@ import { UpdateTourDto } from './dto/update-tour.dto';
 import { Tour } from './entities/tour.entity';
 import fs from 'fs/promises';
 import path from 'path';
+import os from 'os';
 
 @Injectable()
 export class ToursService {
@@ -92,11 +93,13 @@ export class ToursService {
     }
 
     await this.toursRepository.deleteImageById(image.id);
-    await this.deleteFile(image.imagePath);
+    const path = `/tmp/${image.imagePath}`;
+    await this.deleteFile(path);
   }
 
   async deleteFile(filePath: string) {
-    const dirnameToRoot = process.cwd();
-    return await fs.unlink(path.join(dirnameToRoot, filePath));
+    const tempDir = os.tmpdir();
+
+    return await fs.unlink(path.join(tempDir, filePath));
   }
 }
