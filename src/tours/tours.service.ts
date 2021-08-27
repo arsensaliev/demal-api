@@ -93,8 +93,7 @@ export class ToursService {
     }
 
     await this.toursRepository.deleteImageById(image.id);
-    const path = `/tmp/${image.imagePath}`;
-    await this.deleteFile(path);
+    await this.deleteFile(image.imagePath);
   }
 
   async deleteFile(filePath: string) {
