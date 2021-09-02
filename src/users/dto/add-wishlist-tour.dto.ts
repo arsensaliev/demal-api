@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDefined, IsPositive } from 'class-validator';
+import { IsDefined, IsInt, IsPositive } from 'class-validator';
 
 export class AddWishlistTourDto {
   @ApiProperty()
-  @IsPositive()
+  @IsInt()
   @IsDefined()
   tourId: number;
 }

@@ -21,5 +21,12 @@ export class UpdateUserDto {
   @IsNotEmpty()
   @MaxLength(255)
   @IsOptional()
-  imagePath: string;
+  country: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(255)
+  @IsOptional()
+  city: string;
 }
