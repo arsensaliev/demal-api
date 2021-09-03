@@ -3,8 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { UploadsModule } from './file-storage/uploads.module';
 import { ToursModule } from './tours/tours.module';
+import { FileStorageModule } from './file-storage/file-storage.module';
 
 @Module({
   imports: [
@@ -12,7 +12,7 @@ import { ToursModule } from './tours/tours.module';
     DatabaseModule,
     AuthModule,
     UsersModule,
-    UploadsModule,
+    FileStorageModule,
     ToursModule,
   ],
 })

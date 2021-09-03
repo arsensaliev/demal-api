@@ -17,6 +17,7 @@ import path from 'path';
 import { AddWishlistTourDto } from './dto/add-wishlist-tour.dto';
 import { Tour } from 'src/tours/entities/tour.entity';
 import { ToursRepository } from 'src/data/repositories/tours.repository';
+import { FileStorageService } from 'src/file-storage/file-storage.service';
 
 @Injectable()
 export class UsersService {
@@ -24,6 +25,7 @@ export class UsersService {
     private readonly usersRepository: UsersRepository,
     private readonly toursRepository: ToursRepository,
     private readonly authService: AuthService,
+    private readonly fileStorageService: FileStorageService,
   ) {}
 
   async register(payload: CreateUserDto) {
@@ -111,23 +113,24 @@ export class UsersService {
     };
   }
 
-  async uploadImage(
-    userId: number,
-    payload: InsertUserImageDto,
-  ): Promise<User> {
-    const user = await this.usersRepository.findById(userId);
+  async uploadImage(userId: number, imagePath: string): Promise<User> {
+    let user = await this.usersRepository.findById(userId);
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
     if (user.imagePath) {
-      await this.deleteFile(user.imagePath);
+      await this.fileStorageService.deleteFile(user.imagePath);
     }
 
-    return this.usersRepository.setUserImage(userId, {
-      imagePath: payload.imagePath,
+    const filePath = await this.fileStorageService.uploadImage(imagePath);
+
+    user = await this.usersRepository.setUserImage(userId, {
+      imagePath: filePath,
     });
+
+    return user;
   }
 
   async deleteFile(filePath: string) {
