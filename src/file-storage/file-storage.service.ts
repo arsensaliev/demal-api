@@ -10,6 +10,8 @@ interface Params {
   Key: string;
   Body: Buffer;
   ACL: 'private' | 'public-read';
+  ContentType: string;
+  ContentEncoding: string;
 }
 
 @Injectable()
@@ -41,6 +43,8 @@ export class FileStorageService {
       Key: uploadFilePath,
       Body: content,
       ACL: 'public-read',
+      ContentType: 'image/jpeg',
+      ContentEncoding: 'base64',
     };
 
     await this.uploadFile(params);

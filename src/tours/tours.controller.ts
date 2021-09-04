@@ -113,19 +113,9 @@ export class ToursController {
   @UseInterceptors(FilesInterceptor('images', 10, { storage: diskStorage }))
   @Post(':tourId/images')
   async uploadImage(
-    @UploadedFiles() files: Array<Express.Multer.File>,
+    @UploadedFiles() images: Array<Express.Multer.File>,
     @Param('tourId') tourId: string,
   ) {
-    const images: Array<InsertTourImageDto> = files
-      .map((file) => ({
-        imagePath: file.path.replace(/\\/g, '/'),
-      }))
-      .map((file) => ({
-        imagePath: file.imagePath.replace('/tmp/', ''),
-      }));
-
-    console.log(images);
-
     const tour = await this.toursService.uploadImage(+tourId, images);
 
     return {

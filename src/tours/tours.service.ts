@@ -8,12 +8,14 @@ import { Tour } from './entities/tour.entity';
 import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
+import { FileStorageService } from 'src/file-storage/file-storage.service';
 
 @Injectable()
 export class ToursService {
   constructor(
     private readonly toursRepository: ToursRepository,
     private readonly categoriesRepotsitory: ToursRepository,
+    private readonly fileStorageService: FileStorageService,
   ) {}
 
   async create(payload: CreateTourDto): Promise<Tour> {
@@ -60,7 +62,7 @@ export class ToursService {
 
   async uploadImage(
     id: number,
-    payload: Array<InsertTourImageDto>,
+    images: Array<Express.Multer.File>,
   ): Promise<Tour> {
     let tour = await this.toursRepository.findById(id);
 
@@ -68,10 +70,9 @@ export class ToursService {
       throw new NotFoundException('Tour not found');
     }
 
-    for (const image of payload) {
-      await this.toursRepository.insertImage(tour.id, {
-        imagePath: image.imagePath,
-      });
+    for (const image of images) {
+      const imagePath = await this.fileStorageService.uploadImage(image.path);
+      await this.toursRepository.insertImage(tour.id, { imagePath });
     }
 
     tour = await this.toursRepository.detailById(tour.id);
