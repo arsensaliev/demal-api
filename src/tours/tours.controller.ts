@@ -54,9 +54,21 @@ export class ToursController {
     required: false,
     schema: { default: 'desc' },
   })
+  @ApiQuery({
+    name: 'categoryId',
+    required: false,
+  })
   @Get()
-  findAll(@Query('sortBy') sortBy: string, @Query('order') order: string) {
-    return this.toursService.findAll({ sortBy, order });
+  findAll(
+    @Query('sortBy') sortBy: string,
+    @Query('order') order: string,
+    @Query('categoryId') categoryId: string,
+  ) {
+    return this.toursService.findAll({
+      sortBy,
+      order,
+      categoryId: +categoryId,
+    });
   }
 
   @ApiOkResponse({ description: 'Tour has been retrieved.' })

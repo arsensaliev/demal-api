@@ -10,12 +10,20 @@ import { ToursFindAllDto } from '../dto/tours-find-all.dto';
 
 @Injectable()
 export class ToursRepository {
-  findAll(payload: ToursFindAllDto): Promise<Tour[]> {
-    const { sortBy, order } = payload;
+  async findAll(payload: ToursFindAllDto): Promise<Tour[]> {
+    const { sortBy, order, categoryId } = payload;
 
-    return TourModel.query()
+    let query: any = TourModel.query()
       .orderBy(sortBy, order)
       .withGraphFetched({ images: true, category: true });
+
+    if (categoryId >= 0) {
+      query = await this.addCategoryQuery(query, categoryId);
+    }
+
+    const tours: Tour[] = await query;
+
+    return tours;
   }
 
   insertAndFetch(payload: CreateTourDto): Promise<Tour> {
@@ -51,5 +59,11 @@ export class ToursRepository {
 
   deleteImageById(imageId: number): Promise<number> {
     return TourImageModel.query().deleteById(imageId);
+  }
+
+  private async addCategoryQuery(query: any, categoryId: number) {
+    return query.where((builder: any) =>
+      builder.where('categoryId', '=', categoryId),
+    );
   }
 }
