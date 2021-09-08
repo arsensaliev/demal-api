@@ -10,7 +10,7 @@ interface DatabaseConfiguration {
   name: string;
   username: string;
   password: string;
-  // ssl: { rejectUnauthorized: boolean };
+  ssl: { rejectUnauthorized: boolean };
 }
 
 @Module({})
@@ -30,7 +30,7 @@ export class DatabaseModule {
       name: this.configService.get<string>('DB_NAME') || 'demal',
       username: this.configService.get<string>('DB_USERNAME') || 'postgres',
       password: this.configService.get<string>('DB_PASSWORD') || '',
-      // ssl: { rejectUnauthorized: false },
+      ssl: { rejectUnauthorized: false },
     };
   }
 
@@ -43,9 +43,9 @@ export class DatabaseModule {
         port: configuration.port,
         password: configuration.password,
         database: configuration.name,
-        // ssl: {
-        //   rejectUnauthorized: configuration.ssl.rejectUnauthorized,
-        // },
+        ssl: {
+          rejectUnauthorized: configuration.ssl.rejectUnauthorized,
+        },
       },
     });
 
