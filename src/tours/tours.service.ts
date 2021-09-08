@@ -38,11 +38,16 @@ export class ToursService {
 
     const sortByQuery = payload.sortBy || DEFAULT_SORT_COLUMN;
     const orderQuery = (payload.order as Order) || DEFAULT_ORDER;
+    const categoryIdQuery =
+      payload.categoryId === null ? null : +payload.categoryId;
 
-    return this.toursRepository.findAll({
+    const tours = await this.toursRepository.findAll({
       order: orderQuery,
       sortBy: sortByQuery,
+      categoryId: categoryIdQuery,
     });
+
+    return tours;
   }
 
   findOne(id: number): Promise<Tour> {

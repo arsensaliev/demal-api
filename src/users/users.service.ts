@@ -157,7 +157,7 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    const tour = await this.toursRepository.findById(payload.tourId);
+    const tour = await this.toursRepository.detailById(payload.tourId);
     if (!tour) {
       throw new NotFoundException('Tour not found');
     }
